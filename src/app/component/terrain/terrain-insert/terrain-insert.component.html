@@ -1,0 +1,82 @@
+<div class="modal fade" id="nouveau-modal">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Nouveau Terrain</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="insertForm" (submit)="submitAction()" autocomplete="off">
+					<input type="submit" value="" [hidden]="true" [disabled]="insertForm.invalid">
+					<div class="form-group">
+						<label for="nouveau-localisation">localisation:<span class="text-danger">*</span></label>
+						<input type="text" [ngClass]="{'form-control': true, 'is-invalid':insertForm.controls.localisation && insertForm.controls.localisation.touched && insertForm.controls.localisation.invalid}" formControlName="localisation" id="nouveau-localisation">
+						<ng-container *ngIf="insertForm && insertForm.controls.localisation.touched && insertForm.controls.localisation.invalid">
+							<small class="form-text text-danger" *ngIf="insertForm && insertForm.controls.localisation.hasError('required')">Ce champ est requis</small>
+						</ng-container>
+					</div>
+					<div class="form-group">
+						<label for="client">propriétaire:<span class="text-danger">*</span></label>
+						<div class="input-group mb-2" [hidden]="!clientSearchActive">
+							<input formControlName="rechercheProprietaire" type="text" class="form-control" placeholder="Recherche" (input)="filterClient()">
+							<div class="input-group-append">
+								<span class="btn btn-default">{{clientsView.length}}</span>
+							</div>
+						</div>
+						<div class="input-group">
+							<select formControlName="proprietaire" id="client" class="custom-select">
+								<option *ngIf="clientsView.length === 0" value="" [selected]="true" [hidden]="true">(Aucun client)</option>
+								<option [value]="client.getId()" *ngFor="let client of clientsView">{{client.getNom()}} {{client.getPrenom()}}</option>
+							</select>
+							<div class="input-group-append">
+								<button class="btn btn-primary" type="button" (click)="switchClientInputSearchShow()"><i class="fa fa-search"></i></button>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label for="nouveau-surface">surface:<span class="text-danger">*</span></label>
+								<input type="number" [ngClass]="{'form-control': true, 'is-invalid': insertForm.controls.surface.touched && insertForm.controls.surface.invalid}" id="nouveau-surface" formControlName="surface">
+								<ng-container *ngIf="insertForm && insertForm.controls.surface.touched && insertForm.controls.surface.invalid">
+									<small class="form-text text-danger" *ngIf="insertForm && insertForm.controls.surface.hasError('required')">Ce champ est requis</small>
+								</ng-container>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label for="nouveau-prix-par-metre">prix par m²:<span class="text-danger">*</span></label>
+								<input type="number" [ngClass]="{'form-control': true, 'is-invalid': insertForm && insertForm.controls.prixParMetreCarre.touched && insertForm.controls.prixParMetreCarre.invalid}" id="nouveau-prix-par-metre" formControlName="prixParMetreCarre">
+								<ng-container *ngIf="insertForm && insertForm.controls.prixParMetreCarre.touched && insertForm.controls.prixParMetreCarre.invalid">
+									<small class="form-text text-danger" *ngIf="insertForm && insertForm.controls.prixParMetreCarre.hasError('required')">Ce champ est requis</small>
+								</ng-container>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="nouveau-relief">relief:<span class="text-danger">*</span></label>
+						<select id="nouveau-relief" formControlName="relief" class="custom-select">
+							<option value="Coline">Coline</option>
+							<option value="Montagne">Montagne</option>
+							<option value="Plateau">Plateau</option>
+							<option value="Plaine">Plaine</option>
+						</select>
+					</div>
+					<div class="form-check">
+						<label for="nouveau-en-vente">
+							<input type="checkbox" formControlName="enVente" id="nouveau-en-vente"> en vente
+						</label>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary" [disabled]="insertForm.invalid" (click)="submitAction()">Enregistrer</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>

@@ -1,0 +1,44 @@
+<div class="modal fade" id="choix-utilisateur{{componentIndex}}">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Valider la vente</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Vende le terrain de <b>{{terrain.getProprietaire() && terrain.getProprietaire().getPrenom()}} {{terrain.getProprietaire() && terrain.getProprietaire().getNom()}}</b> qui se trouve à <b>{{terrain.getLocalisation()}}</b>. Avec une surface de <b>{{getFormatedSurface()}} m²</b>          à un prix de <b>{{getFormatedPrix()}} Ar</b>
+        </p>
+        <form [formGroup]="sellForm" autocomplete="off">
+          <input type="submit" [hidden]="true" [disabled]="sellForm.invalid">
+          <div class="form-group">
+            <label for="client">au compte de:</label>
+            <div class="input-group mb-2" [hidden]="!clientSearchActive">
+              <input formControlName="clientSearch" type="text" class="form-control" placeholder="Recherche" (input)="filterClient()">
+              <div class="input-group-append">
+                <span class="btn btn-default">{{clientsView.length > 0 ? clientsView.length - 1 : 0}}</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <select formControlName="client" id="client" class="custom-select">
+								<option *ngIf="clientsView.length <= 1" value="" [selected]="true" [disabled]="true" [hidden]="true">(Aucun client)</option>
+								<option [value]="client.getId()" *ngFor="let client of clientsView" [hidden]="client.getId() === (terrain.getProprietaire() && terrain.getProprietaire().getId())">{{client.getNom()}} {{client.getPrenom()}}</option>
+							</select>
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" (click)="switchClientInputSearchShow()"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" [disabled]="sellForm.invalid" (click)="saveAction()">Valider</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

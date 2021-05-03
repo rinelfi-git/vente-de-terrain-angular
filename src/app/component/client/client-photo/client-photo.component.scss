@@ -1,0 +1,44 @@
+.drop-zone img {
+  display: block;
+  max-width: 100%;
+}
+
+.drop-listener {
+  height: 300px;
+  border: 2px solid transparent;
+  padding: 10px 5px;
+  margin: 10px 0;
+  font-weight: bold;
+  text-align: center;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #2c2c2c;
+}
+
+.drop-listener.drag-over {
+  border: 2px dotted #16684c;
+}
+
+.preview {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  margin: 10px 0;
+  border: 1px solid black;
+}
+
+.directives {
+  text-align: center;
+}
+
+.cropper-container {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.modal-dialog .overlay {
+  background-color: transparent !important;
+  display: block;
+}

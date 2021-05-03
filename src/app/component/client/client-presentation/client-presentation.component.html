@@ -1,0 +1,161 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<h1 class="m-0 text-dark"><b><small>Gestion du client</small></b></h1>
+				</div><!-- /.col -->
+				<div class="col-sm-6">
+					<div class="float-sm-right">
+						<button class="btn btn-outline-primary" data-toggle="modal" data-target="#nouveau-modal" (click)="initInsertForm()"><span class="material-icons">add</span> Nouveau</button>
+					</div>
+				</div>
+			</div><!-- /.row -->
+		</div><!-- /.container-fluid -->
+	</div>
+	<app-client-insert [states]="childStates" [addressGroup]="insertAddressForm" [personalInformationGroup]="ajoutInformationPersonnelGroup" [telephoneGroup]="ajoutTelephoneGroup" (operationFini)="fermerModals($event)"></app-client-insert>
+	<app-client-update [states]="childStates" [client]="client" [adresseGroup]="modificationAdresseGroup" [personalInformationGroup]="modificationInformationPersonnelGroup" [telephoneGroup]="modificationTelephoneGroup" (operationFini)="fermerModals($event)"></app-client-update>
+	<app-client-photo [states]="statePhoto" [scriptLoader]="scriptLoader" (uploadTermine)="fermerModals($event)"></app-client-photo>
+	<!-- /.content-header -->
+	<div class="container mb-2">
+		<div class="card">
+			<div class="card-body">
+				<!-- SEARCH FORM -->
+				<form [formGroup]="paginationForm" (submit)="paginationFormAction()">
+					<div class="input-group input-group-lg">
+						<input class="form-control form-control-navbar" formControlName="keywordSearch" type="search" placeholder="Recherche" aria-label="Search">
+						<div class="input-group-append">
+							<button class="btn btn-primary" type="submit">
+								<i class="fa fa-search"></i>
+							</button>
+						</div>
+					</div>
+					<div class="btn-group mt-2">
+						<button type="button" class="btn btn-default mr-2 mb-2" data-toggle="modal" data-target="#element-par-page" (click)="initPaginationForm()"><span class="material-icons">format_list_numbered</span></button>
+						<button type="button" class="btn btn-default mr-2 mb-2" data-toggle="modal" data-target="#module-recherche"><span class="material-icons">view_module</span></button>
+						<button type="button" class="btn btn-default mr-2 mb-2" data-toggle="modal" data-target="#tri"><span class="material-icons">sort</span></button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Main content -->
+	<div class="content">
+		<div class="container">
+			<div class="row">
+				<app-client-presentation-card class="w-100 col-12 col-md-6 col-lg-4 d-flex align-items-stretch" [client]="clientComponent" [clientHost]="clientHost" (miseAJourListe)="reloadView()" (modifierClick)="initialiserFormulaireModification($event)" (modifierPhoto)="initialiserFormulairePhoto($event)" *ngFor="let clientComponent of clients"></app-client-presentation-card>
+				<!-- /.row -->
+			</div><!-- /.container-fluid -->
+			
+			<!--			pagination-->
+			<div class="row">
+				<div class="col-12">
+					<ul class="pagination float-right">
+						<li [ngClass]="{'page-item': true, 'disabled': 1 == paginationHelper.getPageCourante()}" (click)="naviguerPage(1)">
+							<button class="page-link"><span class="material-icons md-18">first_page</span></button>
+						</li>
+						<li [ngClass]="{'page-item': true, 'disabled': 1 == paginationHelper.getPageCourante()}" (click)="naviguerArriere(paginationHelper.getPageCourante())">
+							<button class="page-link"><span class="material-icons md-18">chevron_left</span></button>
+						</li>
+						<li [ngClass]="{'page-item': true, 'active': page == paginationHelper.getPageCourante()}" *ngFor="let page of boutonPages" (click)="naviguerPage(page)">
+							<button class="page-link">{{page}}</button>
+						</li>
+						<li [ngClass]="{'page-item': true, 'disabled': paginationHelper.getPageTotal() == paginationHelper.getPageCourante()}" (click)="naviguerAvant(paginationHelper.getPageCourante())">
+							<button class="page-link"><span class="material-icons md-18">chevron_right</span></button>
+						</li>
+						<li [ngClass]="{'page-item': true, 'disabled': paginationHelper.getPageTotal() == paginationHelper.getPageCourante()}" (click)="naviguerPage(paginationHelper.getPageTotal())">
+							<button class="page-link"><span class="material-icons md-18">last_page</span></button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- /.content -->
+	</div>
+	<!-- /.content-wrapper -->
+</div>
+<div class="modal fade" id="element-par-page">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4>Element par page</h4>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="paginationForm" autocomplete="off" (submit)="paginationFormAction()">
+					<input type="submit" value="" [hidden]="true">
+					<div class="form-check"><label for="element6"><input type="radio" formControlName="elementForEachPage" id="element6" value="6"> 6</label></div>
+					<div class="form-check"><label for="element12"><input type="radio" formControlName="elementForEachPage" id="element12" value="12"> 12</label></div>
+					<div class="form-check"><label for="element18"><input type="radio" formControlName="elementForEachPage" id="element18" value="18"> 18</label></div>
+					<div class="form-check"><label for="element24"><input type="radio" formControlName="elementForEachPage" id="element24" value="24"> 24</label></div>
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<label class="input-group-text" for="customElement"><input type="radio" formControlName="elementForEachPage" id="customElement" value="custom"></label>
+							</div>
+							<input type="number" class="form-control" formControlName="customElementForEachPage" placeholder="nombre d'éléments">
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default" [disabled]="paginationForm.invalid" (click)="paginationFormAction()">appliquer</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="module-recherche">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4>Modules à rechercher</h4>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="paginationForm" autocomplete="off" (submit)="paginationFormAction()">
+					<input type="submit" value="" [hidden]="true">
+					<div class="form-group">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" id="module-cin" formControlName="searchField" value="cin">
+							<label class="form-check-label" for="module-cin">cin</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" id="module-nom" formControlName="searchField" value="nom">
+							<label class="form-check-label" for="module-nom">nom et prénom</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" id="module-adresse" formControlName="searchField" value="adresse">
+							<label class="form-check-label" for="module-adresse">adresse</label>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" (click)="resetModule()" class="btn btn-default">annuler</button>
+				<button class="btn btn-default" (click)="paginationFormAction()">appliquer</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="tri">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4>Tri d'affichage</h4>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="paginationForm" (submit)="paginationFormAction()">
+					<input type="submit" value="" [hidden]="true">
+					<div class="form-check"><label for="asc" class="form-check-label"><input type="radio" class="form-check-input" formControlName="sortDirection" id="asc" value="asc"> A - Z</label></div>
+					<div class="form-check"><label for="desc" class="form-check-label"><input type="radio" class="form-check-input" formControlName="sortDirection" id="desc" value="desc"> Z - A</label></div>
+					<hr>
+					<div class="form-check"><label for="nameSort" class="form-check-label"><input type="radio" class="form-check-input" formControlName="sortConstraint" id="nameSort" value="nom"> nom et prénom</label></div>
+					<div class="form-check"><label for="cinSort" class="form-check-label"><input type="radio" class="form-check-input" formControlName="sortConstraint" id="cinSort" value="cin"> cin</label></div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-default" (click)="paginationFormAction()">appliquer</button>
+			</div>
+		</div>
+	</div>
+</div>

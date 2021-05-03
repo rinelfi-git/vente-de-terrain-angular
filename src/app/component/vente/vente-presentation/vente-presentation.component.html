@@ -1,0 +1,102 @@
+<div class="content-wrapper">
+	<div class="content-header">
+		<div class="container">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<h1 class="m-0 text-dark"><b><small>Vente</small></b></h1>
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container-fluid -->
+	</div>
+	<div class="content">
+		<div class="row">
+			<div class="col-md-4 col-sm-12 col-lg-3">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Critère</h3>
+						
+						<div class="card-tools">
+							<button type="button" class="btn btn-tool" data-card-widget="collapse">
+								<i class="fas fa-minus"></i>
+							</button>
+						</div>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body">
+						<form [formGroup]="criteriaForm" (submit)="criteriaAction()" autocomplete="off">
+							<input type="submit" [hidden]="true">
+							<div class="form-group">
+								<label for="localisation">localisation:</label>
+								<input type="text" class="form-control" id="localisation" formControlName="localisation">
+							</div>
+							<div class="form-group">
+								<label for="surface">surface (m²):</label>
+								<input type="number" class="form-control" id="surface" formControlName="surface">
+							</div>
+							<div class="form-group">
+								<div class="form-check">
+									<input class="form-check-input" id="surface-egale" type="radio" value="eq" formControlName="contrainteSurface" (change)="updateActiveContrainteSurface()">
+									<label class="form-check-label" for="surface-egale">égale</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" id="surface-superieur" type="radio" value="gt" formControlName="contrainteSurface" (change)="updateActiveContrainteSurface()">
+									<label class="form-check-label" for="surface-superieur">supérieur</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" id="surface-inferieur" type="radio" value=lt formControlName="contrainteSurface" (change)="updateActiveContrainteSurface()">
+									<label class="form-check-label" for="surface-inferieur">inférieur</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" id="surface-disabled" type="radio" value="not" formControlName="contrainteSurface" (change)="updateActiveContrainteSurface()">
+									<label class="form-check-label" for="surface-disabled">ne pas séléctionner</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="budget">budget (Ar):</label>
+								<input type="number" class="form-control" id="budget" formControlName="budget">
+							</div>
+							<div class="form-group">
+								<div class="form-check">
+									<input class="form-check-input" id="budget-egale" type="radio" value="eq" formControlName="contrainteBudget" (change)="updateActiveContrainteBudget()">
+									<label class="form-check-label" for="budget-egale">égale</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" id="budget-superieur" type="radio" value="gt" formControlName="contrainteBudget" (change)="updateActiveContrainteBudget()">
+									<label class="form-check-label" for="budget-superieur">supérieur</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" id="budget-inferieur" type="radio" value="lt" formControlName="contrainteBudget" (change)="updateActiveContrainteBudget()">
+									<label class="form-check-label" for="budget-inferieur">inférieur</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" id="budget-disabled" type="radio" value="not" formControlName="contrainteBudget" (change)="updateActiveContrainteBudget()">
+									<label class="form-check-label" for="budget-disabled">ne pas séléctionner</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="relief">relief:</label>
+								<select id="relief" class="custom-select" formControlName="relief">
+									<option value="*">Tout</option>
+									<option value="coline">Coline</option>
+									<option value="montagne">Montagne</option>
+									<option value="plateau">Plateau</option>
+									<option value="plaine">Plaine</option>
+								</select>
+							</div>
+						</form>
+					</div>
+					<!-- /.card-body -->
+					<div class="card-footer">
+						<button class="btn btn-primary" type="button" (click)="criteriaAction()">Appliquer</button>
+					</div>
+					<!-- /.card-footer-->
+				</div>
+			</div>
+			<div class="col-md-8 col-sm-12 col-lg-9">
+				<div class="row">
+					<app-vente-presentation-card class="col-sm-12 col-md-6 col-lg-4 d-flex align-items-stretch" [componentIndex]="componentIndex" [terrain]="terrain" *ngFor="let terrain of terrains; let componentIndex = index" (update)="updateList()"></app-vente-presentation-card>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

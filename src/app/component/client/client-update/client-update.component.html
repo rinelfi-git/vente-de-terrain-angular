@@ -1,0 +1,103 @@
+<div class="modal fade" id="modification-modal">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{{states.titreEtape}}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ng-container *ngIf="states.rangEtape == states.etatEtape.informationPersonnel; then informationPersonnelTemplate"></ng-container>
+				<ng-container *ngIf="states.rangEtape == states.etatEtape.telephone; then telephoneTemplate"></ng-container>
+				<ng-container *ngIf="states.rangEtape == states.etatEtape.adresse; then adresseTemplate"></ng-container>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<button type="button" class="btn btn-default" data-dismiss="modal" *ngIf="states.rangEtape == states.etatEtape.informationPersonnel">Annuler</button>
+				<button type="button" class="btn btn-default" (click)="formulairePrecedent(states.rangEtape)" *ngIf="states.rangEtape != states.etatEtape.informationPersonnel"><i class="fa fa-angle-left"></i> Précédent</button>
+				<button type="button" class="btn btn-primary" [disabled]="states.rangEtape == states.etatEtape.informationPersonnel && personalInformationGroup.invalid || states.rangEtape == states.etatEtape.telephone && telephoneGroup.invalid || states.rangEtape == states.etatEtape.adresse && adresseGroup.invalid" (click)="formulaireAction(states.rangEtape)">
+					<span *ngIf="states.rangEtape == states.etatEtape.adresse">Enregistrer</span>
+					<span *ngIf="states.rangEtape != states.etatEtape.adresse">Suivant <i class="fa fa-angle-right"></i></span>
+				</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<ng-template #informationPersonnelTemplate>
+	<form autocomplete="off" [formGroup]="personalInformationGroup" (ngSubmit)="formulaireAction(states.rangEtape)">
+		<input type="submit" [hidden]="true" [disabled]="personalInformationGroup.invalid">
+		<div class="form-group">
+			<label for="modification-cin">cin:<span class="text-danger">*</span></label>
+			<input type="text" placeholder="xxx xx(1 ou 2) xxx xxx (Sans espace)" formControlName="cin" [ngClass]="{'form-control': true, 'is-invalid': personalInformationGroup.get('cin').touched && personalInformationGroup.get('cin').invalid}" id="modification-cin">
+			<ng-container *ngIf="personalInformationGroup.get('cin').touched && personalInformationGroup.get('cin').invalid">
+				<small class="form-text text-danger" *ngIf="personalInformationGroup.get('cin').hasError('pattern')">Format incorrecte</small>
+				<small class="form-text text-danger" *ngIf="personalInformationGroup.get('cin').hasError('required')">Ce champ est requis</small>
+			</ng-container>
+		</div>
+		<div class="form-group">
+			<label for="modification-nom">nom:<span class="text-danger">*</span></label>
+			<input type="text" placeholder="ex: Rakotoarivelo" formControlName="nom" [ngClass]="{'form-control': true, 'is-invalid': personalInformationGroup.get('nom').touched && personalInformationGroup.get('nom').invalid}" id="modification-nom">
+			<ng-container *ngIf="personalInformationGroup.get('nom').touched && personalInformationGroup.get('nom').invalid">
+				<small class="form-text text-danger" *ngIf="personalInformationGroup.get('nom').hasError('required')">Ce champ est requis</small>
+			</ng-container>
+		</div>
+		<div class="form-group">
+			<label for="modification-prenom">prénom:</label>
+			<input type="text" placeholder="ex: Benjamina" class="form-control" id="modification-prenom" formControlName="prenom">
+		</div>
+	</form>
+</ng-template>
+<ng-template #telephoneTemplate>
+	<form [formGroup]="telephoneGroup" autocomplete="off" (ngSubmit)="formulaireAction(states.rangEtape)">
+		<input type="submit" [hidden]="true" [disabled]="telephoneGroup.invalid">
+		<div formArrayName="telephones" class="form-group" *ngFor="let telephone of getTelephone().controls; let i = index">
+			<label for="telehone{{i}}">téléphone n°{{i + 1}}:<span class="text-danger">*</span></label>
+			<div class="input-group">
+				<input type="text" placeholder="ex: 03x xx xxx xx (Sans éspace)" [formControlName]="i" [ngClass]="{'form-control': true, 'is-invalid': telephone.touched && telephone.invalid}" id="telehone{{i}}">
+				<div class="input-group-append">
+					<button class="btn btn-danger" type="button" [disabled]="getTelephone().length == 1" (click)="supprimerTelephone(i)"><i class="fa fa-minus"></i></button>
+				</div>
+			</div>
+			<ng-container *ngIf="telephone.touched && telephone.invalid">
+				<small class="form-text text-danger" *ngIf="telephone.hasError('pattern')">Format incorrecte</small>
+				<small class="form-text text-danger" *ngIf="telephone.hasError('required')">Ce champ est requis</small>
+			</ng-container>
+		</div>
+		<div class="row">
+			<div class="col-12"><button class="btn btn-primary btn-flat w-100" type="button" (click)="ajouterTelephone()"><i class="fa fa-plus"></i></button></div>
+		</div>
+	</form>
+</ng-template>
+<ng-template #adresseTemplate>
+	<form [formGroup]="adresseGroup" autocomplete="off" (ngSubmit)="formulaireAction(states.rangEtape)">
+		<input type="submit" [hidden]="true" [disabled]="adresseGroup.invalid">
+		<div class="row">
+			<div class="col-md-6 col-sm-12">
+				<div class="form-group">
+					<label for="modification-ville">ville:<span class="text-danger">*</span></label>
+					<input type="text" placeholder="ex: Fianarantsoa" [ngClass]="{'form-control': true, 'is-invalid': adresseGroup.get('ville').touched && adresseGroup.get('ville').invalid}" id="modification-ville" formControlName="ville">
+					<ng-container *ngIf="adresseGroup.get('ville').touched && adresseGroup.get('ville').invalid">
+						<small class="form-text text-danger" *ngIf="adresseGroup.get('ville').hasError('required')">Ce champ est requis</small>
+					</ng-container>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div class="form-group">
+					<label for="modification-code-postal">code postal:<span class="text-danger">*</span></label>
+					<input type="number" placeholder="ex: 301" [ngClass]="{'form-control': true, 'is-invalid': adresseGroup.get('codePostal').touched && adresseGroup.get('codePostal').invalid}" id="modification-code-postal" formControlName="codePostal">
+					<ng-container *ngIf="adresseGroup.get('codePostal').touched && adresseGroup.get('codePostal').invalid">
+						<small class="form-text text-danger" *ngIf="adresseGroup.get('codePostal').hasError('required')">Ce champ est requis</small>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-group">
+				<label for="modification-lot">lot:</label>
+				<textarea id="modification-lot" rows="3" id="modification-lot" class="form-control" formControlName="lot"></textarea>
+			</div>
+		</div>
+	</form>
+</ng-template>
